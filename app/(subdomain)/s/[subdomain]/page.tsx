@@ -21,7 +21,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
       {blogs.map((blog, index) => (
         <div key={index}>
           <h3>{blog.title}</h3>
-          <p>{blog.body}</p>
+          <p dangerouslySetInnerHTML={{ __html: blog.body }}></p>
         </div>
       ))}
     </div>
