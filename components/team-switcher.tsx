@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useOrganizationList } from "@clerk/nextjs";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { OrganizationProfile, useOrganizationList } from "@clerk/nextjs";
+import { ChevronsUpDown, Plus, Settings } from "lucide-react";
 import Image from "next/image";
 
 import {
@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -38,6 +37,8 @@ export function TeamSwitcher() {
   const { isMobile } = useSidebar();
   const [activeOrgId, setActiveOrgId] = React.useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [showOrganizationProfile, setShowOrganizationProfile] =
+    React.useState(false);
   const [orgName, setOrgName] = React.useState("");
   const [orgSlug, setOrgSlug] = React.useState("");
 
@@ -116,7 +117,8 @@ export function TeamSwitcher() {
               {userMemberships.data.map((membership, index) => (
                 <DropdownMenuItem
                   key={membership.organization.id}
-                  onClick={async () => {
+                  onClick={async (e) => {
+                    e.stopPropagation();
                     await setActive({
                       organization: membership.organization.id,
                     });
@@ -127,8 +129,21 @@ export function TeamSwitcher() {
                   <div className="flex size-6 items-center justify-center rounded-md border overflow-hidden">
                     {renderLogo(membership)}
                   </div>
-                  {membership.organization.name}
-                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                  <div className="w-full flex items-center justify-between">
+                    {membership.organization.name}
+                    {activeMembership.organization.id ===
+                      membership.organization.id && (
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowOrganizationProfile(true);
+                        }}
+                        variant="ghost"
+                      >
+                        <Settings className="size-4" />
+                      </Button>
+                    )}
+                  </div>
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
@@ -147,6 +162,25 @@ export function TeamSwitcher() {
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>
+
+      {/* Organization Profile Modal */}
+      <Dialog
+        open={showOrganizationProfile}
+        onOpenChange={setShowOrganizationProfile}
+      >
+        <DialogTitle></DialogTitle>
+        <DialogContent className="min-w-fit max-h-[90vh] overflow-hidden p-0">
+          <OrganizationProfile
+            routing="hash"
+            appearance={{
+              elements: {
+                rootBox: "w-full h-full",
+                card: "shadow-none border-none w-full h-full max-w-none",
+              },
+            }}
+          />
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
