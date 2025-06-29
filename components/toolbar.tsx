@@ -27,13 +27,10 @@ import {
   LucideIcon,
   MinusIcon,
   PlusIcon,
-  PrinterIcon,
-  Redo2Icon,
   RemoveFormattingIcon,
   SearchIcon,
   SpellCheckIcon,
   UnderlineIcon,
-  Undo2Icon,
   UploadIcon,
 } from "lucide-react";
 import { type Level } from "@tiptap/extension-heading";
